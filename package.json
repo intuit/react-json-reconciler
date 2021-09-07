@@ -4,6 +4,10 @@
   "description": "A reconciler for creating JSON objects from a react-jsx tree",
   "main": "dist/index.js",
   "author": "Adam Dierkens <Adam_Dierkens@intuit.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/intuit/react-json-reconciler.git"
+  },
   "license": "MIT",
   "scripts": {
     "build": "tsc",
