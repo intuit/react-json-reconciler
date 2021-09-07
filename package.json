@@ -1,0 +1,35 @@
+{
+  "name": "react-json-reconciler",
+  "version": "1.0.0",
+  "description": "A reconciler for creating JSON objects from a react-jsx tree",
+  "main": "dist/index.js",
+  "author": "Adam Dierkens <Adam_Dierkens@intuit.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src --cache",
+    "prepare": "is-ci || husky install"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "@types/react": "^17.0.11",
+    "@design-systems/eslint-config": "^2.17.8",
+    "husky": "^7.0.0",
+    "is-ci": "^3.0.0",
+    "jest": "^27.0.6",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.2",
+    "react": "^17.0.2",
+    "ts-jest": "^27.0.3",
+    "typescript": "^4.3.5"
+  },
+  "peerDependencies": {
+    "react": "*"
+  },
+  "dependencies": {
+    "@types/react-reconciler": "^0.26.1",
+    "react-flatten-children": "^1.1.2",
+    "react-reconciler": "^0.26.2"
+  }
+}
