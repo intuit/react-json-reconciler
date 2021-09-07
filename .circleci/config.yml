@@ -74,6 +74,9 @@ jobs:
           command: yarn test --ci --reporters=default --reporters=jest-junit
           environment:
             JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
+      - run:
+          name: Send CodeCov Results
+          command: bash <(curl -s https://codecov.io/bash) -t $CODECOV_KEY
       - store_test_results:
           path: ./reports/junit/
       - store_artifacts:
