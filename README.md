@@ -8,8 +8,11 @@ This project leverages the `react-reconciler` to allow users to serialize JSX tr
 
 <div align="center">
 <!-- <a href="https://circleci.com/gh/intuit/react-jcon-reconciler"><img src="https://img.shields.io/circleci/project/github/intuit/react-jcon-reconciler/main.svg?style=flat-square&logo=circleci" alt="CircleCI" /></a> 
-<a href="https://codecov.io/gh/intuit/react-jcon-reconciler"><img src="https://img.shields.io/codecov/c/github/intuit/react-jcon-reconciler.svg?style=flat-square&logo=codecov" alt="Codecov" /></a>  -->
+-->
 <a href="https://www.npmjs.com/package/react-json-reconciler"><img src="https://img.shields.io/npm/v/react-json-reconciler.svg?style=flat-square&logo=npm" alt="npm" /></a> 
+<a href="https://codecov.io/gh/intuit/react-json-reconciler">
+  <img src="https://codecov.io/gh/intuit/react-json-reconciler/branch/main/graph/badge.svg?token=U4V5ZF55CO"/>
+</a>
 <a href="#contributors"><img src="https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square&logo=github" alt="All Contributors" /></a> 
 <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square&logo=producthunt" alt="code style: prettier" /></a></div>
 
