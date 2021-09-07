@@ -1,6 +1,6 @@
 {
   "name": "react-json-reconciler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A reconciler for creating JSON objects from a react-jsx tree",
   "main": "dist/index.js",
   "author": "Adam Dierkens <Adam_Dierkens@intuit.com>",
