@@ -8,6 +8,8 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
+    "release": "auto shipit -vv",
+    "labelCheck": "auto pr-check",
     "lint": "eslint src --cache",
     "prepare": "is-ci || husky install"
   },
