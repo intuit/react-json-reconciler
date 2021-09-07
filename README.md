@@ -1,4 +1,7 @@
 <h1 align="center">
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
   <img width="400" alt="react-json-reconciler" src="./logo.png"/>
 </h1>
 
@@ -62,7 +65,11 @@ const CustomComponent = (props) => {
 };
 ```
 
-## Contributing
+## License
+
+`react-json-reconciler` is provided under the [MIT](./LICENSE) license.
+
+## Contributors ✨
 
 Feel free to open an issue or a pull request!
 
@@ -70,6 +77,20 @@ Make sure to read our [code of conduct](./CODE_OF_CONDUCT.md).
 
 We actively welcome pull requests. Learn how to [contribute](./CONTRIBUTING.md).
 
-## License
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
-`react-json-reconciler` is provided under the [MIT](./LICENSE) license.
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/adierkens"><img src="https://avatars.githubusercontent.com/u/13004162?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Adam Dierkens</b></sub></a><br /><a href="https://github.com/intuit/react-json-reconciler/commits?author=adierkens" title="Code">💻</a> <a href="https://github.com/intuit/react-json-reconciler/commits?author=adierkens" title="Documentation">📖</a> <a href="#example-adierkens" title="Examples">💡</a> <a href="#infra-adierkens" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-adierkens" title="Maintenance">🚧</a> <a href="#platform-adierkens" title="Packaging/porting to new platform">📦</a> <a href="https://github.com/intuit/react-json-reconciler/commits?author=adierkens" title="Tests">⚠️</a> <a href="#tool-adierkens" title="Tools">🔧</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

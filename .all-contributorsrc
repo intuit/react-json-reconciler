@@ -1,0 +1,31 @@
+{
+  "projectName": "react-json-reconciler",
+  "projectOwner": "intuit",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "adierkens",
+      "name": "Adam Dierkens",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13004162?v=4",
+      "profile": "https://github.com/adierkens",
+      "contributions": [
+        "code",
+        "doc",
+        "example",
+        "infra",
+        "maintenance",
+        "platform",
+        "test",
+        "tool"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}
