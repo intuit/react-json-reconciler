@@ -9,19 +9,35 @@ export type JsonType =
   | { [key: string]: JsonType };
 
 interface BaseJsonNode<T extends NodeType> {
+  /** The node type */
   readonly type: T;
+
+  /** The parent of this node */
   parent?: JsonNode;
+
+  /** Any children of this node */
   children?: Array<JsonNode>;
 }
 
+/** A node that represents a primitive value */
 export class ValueNode<T extends ValueType = ValueType>
   implements BaseJsonNode<"value">
 {
   public readonly type: "value" = "value";
-  public items: [{ value: T | undefined }, ...ValueNode[]];
+  public items: [
+    {
+      /** The value of the node */
+      value: T | undefined;
+    },
+    ...ValueNode[]
+  ];
+
   public parent?: JsonNode;
 
-  private local: { value: T | undefined };
+  private local: {
+    /** The local value of this node */
+    value: T | undefined;
+  };
 
   constructor(value: T | undefined) {
     this.local = { value };
@@ -41,6 +57,7 @@ export class ValueNode<T extends ValueType = ValueType>
   }
 }
 
+/** An array node */
 export class ArrayNode implements BaseJsonNode<"array"> {
   public readonly type: "array" = "array";
   public parent?: JsonNode;
@@ -51,6 +68,7 @@ export class ArrayNode implements BaseJsonNode<"array"> {
   }
 }
 
+/** An object node */
 export class ObjectNode implements BaseJsonNode<"object"> {
   public readonly type: "object" = "object";
   public parent?: JsonNode;
@@ -62,6 +80,7 @@ export class ObjectNode implements BaseJsonNode<"object"> {
   }
 }
 
+/** A property of an object */
 export class PropertyNode implements BaseJsonNode<"property"> {
   public readonly type: "property" = "property";
 
@@ -80,6 +99,7 @@ export class PropertyNode implements BaseJsonNode<"property"> {
   }
 }
 
+/** Convert a JSON object into an AST representation */
 export function fromJSON(value: JsonType): JsonNode {
   if (
     typeof value === "string" ||
@@ -110,6 +130,7 @@ export function fromJSON(value: JsonType): JsonNode {
   throw new Error(`Unsupported value conversion from type: ${typeof value}`);
 }
 
+/** Convert an AST structure into a JSON object */
 export function toJSON(node: JsonNode): JsonType {
   switch (node.type) {
     case "array":

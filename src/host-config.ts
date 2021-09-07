@@ -9,12 +9,14 @@ import {
 import { JsonElements } from "./types";
 
 // https://github.com/facebook/react/blob/master/packages/react-dom/src/client/ReactDOMHostConfig.js#L400
+/** Throw an error in the next tick */
 function handleErrorInNextTick(error: Error) {
   setTimeout(() => {
     throw error;
   });
 }
 
+/** Append a child to a parent node */
 function appendChild(parent: JsonNode, child: JsonNode) {
   child.parent = parent;
 
@@ -40,7 +42,7 @@ function appendChild(parent: JsonNode, child: JsonNode) {
       }
 
       if (parent.valueNode) {
-        parent.valueNode = appendChild(parent.valueNode as JsonNode, child);
+        parent.valueNode = appendChild(parent.valueNode, child);
       } else {
         parent.valueNode = child;
       }
@@ -61,6 +63,7 @@ function appendChild(parent: JsonNode, child: JsonNode) {
   return parent;
 }
 
+/** Create an instance of the given element type */
 function createInstance<T extends keyof JsonElements>(
   type: T,
   props: JsonElements[T]

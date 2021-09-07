@@ -71,7 +71,13 @@ jobs:
           at: ~/react-json-reconciler
       - run:
           name: Test
-          command: yarn test
+          command: yarn test --ci --reporters=default --reporters=jest-junit
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
+      - store_test_results:
+          path: ./reports/junit/
+      - store_artifacts:
+          path: ./reports/junit
 
   release:
     <<: *defaults
