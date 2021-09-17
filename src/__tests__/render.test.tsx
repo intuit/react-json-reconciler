@@ -114,4 +114,25 @@ describe("refs", () => {
     expect.assertions(2);
     expect(await render(element)).toStrictEqual("Foo");
   });
+
+  it("removes items from a container", async () => {
+    const Custom = () => {
+      const [show, setShow] = React.useState(false);
+
+      React.useEffect(() => {
+        setShow(true);
+      }, [show]);
+
+      return (
+        <array>
+          <value>1</value>
+          {show && <value>2</value>}
+        </array>
+      );
+    };
+
+    const element = <Custom />;
+
+    expect(await render(element)).toStrictEqual(["1", "2"]);
+  });
 });

@@ -85,6 +85,32 @@ function createInstance<T extends keyof JsonElements>(
   }
 }
 
+/** remove a child from the node */
+function removeChild(parent: JsonNode, child: JsonNode) {
+  switch (parent.type) {
+    case "array":
+      parent.items = parent.items.filter((c) => c !== child);
+      break;
+
+    case "object":
+      parent.properties = parent.properties.filter((c) => c !== child);
+      break;
+
+    case "property":
+      if (parent.valueNode === child) {
+        parent.valueNode = undefined;
+      }
+
+      break;
+    case "value":
+      parent.items = parent.items.filter((c) => c !== child) as any;
+
+      break;
+    default:
+      throw new Error("Unknown type");
+  }
+}
+
 export const hostConfig: HostConfig<
   keyof JsonElements,
   any,
@@ -119,7 +145,8 @@ export const hostConfig: HostConfig<
   },
 
   clearContainer: (parent: JsonNode) => {},
-
+  removeChildFromContainer: removeChild,
+  removeChild,
   finalizeInitialChildren: () => false,
   prepareUpdate: () => null,
   shouldSetTextContent: () => false,

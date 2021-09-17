@@ -18,8 +18,8 @@
     "prepare": "is-ci || husky install"
   },
   "files": [
-    "src",
-    "dist",
+    "src/",
+    "dist/",
     "logo.png"
   ],
   "devDependencies": {
