@@ -1,3 +1,15 @@
+# v1.0.4 (Mon Feb 28 2022)
+
+#### 🐛 Bug Fix
+
+- Limit to 1 instance of reconciler [#2](https://github.com/intuit/react-json-reconciler/pull/2) ([@adierkens](https://github.com/adierkens))
+
+#### Authors: 1
+
+- Adam Dierkens ([@adierkens](https://github.com/adierkens))
+
+---
+
 # v1.0.3 (Fri Sep 17 2021)
 
 ### Release Notes
