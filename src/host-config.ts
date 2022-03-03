@@ -1,4 +1,5 @@
 import { HostConfig } from "react-reconciler";
+import { JsonNodeWithoutProxy, ProxyNode, ValueNodeItems } from ".";
 import {
   ArrayNode,
   JsonNode,
@@ -16,45 +17,68 @@ function handleErrorInNextTick(error: Error) {
   });
 }
 
+/** Drill down and skip any proxy nodes to get the _real_ one */
+function getFirstNonProxyNode(n: JsonNode): JsonNodeWithoutProxy | undefined {
+  if (n.type === "proxy") {
+    if (n.value && n.value?.type !== "proxy") {
+      return n.value;
+    }
+
+    return undefined;
+  }
+
+  return n;
+}
+
 /** Append a child to a parent node */
 function appendChild(parent: JsonNode, child: JsonNode) {
   child.parent = parent;
+  const realChild = getFirstNonProxyNode(child);
+
+  if (realChild === undefined) {
+    return parent;
+  }
+
+  realChild.parent = parent;
 
   switch (parent.type) {
     case "array":
-      if (child.type === "property") {
+      if (realChild.type === "property") {
         throw new Error("Property cannot be a child of an array");
       }
 
-      parent.items.push(child);
-      child.parent = parent;
+      parent.items.push(realChild);
+      realChild.parent = parent;
       break;
     case "object":
-      if (child.type !== "property") {
+      if (realChild.type !== "property") {
         throw new Error("Objects can only have property children");
       }
 
-      parent.children.push(child);
+      parent.children.push(realChild);
       break;
     case "property":
-      if (child.type === "property") {
+      if (realChild.type === "property") {
         throw new Error("Property cannot be a child of a property");
       }
 
       if (parent.valueNode) {
-        parent.valueNode = appendChild(parent.valueNode, child);
+        parent.valueNode = appendChild(parent.valueNode, realChild);
       } else {
-        parent.valueNode = child;
+        parent.valueNode = realChild;
       }
 
       break;
     case "value":
-      if (child.type !== "value") {
+      if (realChild.type !== "value") {
         throw new Error("Unable to append child to value");
       }
 
       // Concat the things together as strings
-      parent.items.push(child);
+      parent.items.push(realChild);
+      break;
+    case "proxy":
+      parent.value = child;
       break;
     default:
       throw new Error("Unknown type");
@@ -80,6 +104,8 @@ function createInstance<T extends keyof JsonElements>(
       );
     case "value":
       return new ValueNode((props as JsonElements["value"]).value ?? null);
+    case "proxy":
+      return new ProxyNode();
     default:
       throw new Error("idk what to do");
   }
@@ -103,7 +129,7 @@ function removeChild(parent: JsonNode, child: JsonNode) {
 
       break;
     case "value":
-      parent.items = parent.items.filter((c) => c !== child) as any;
+      parent.items = parent.items.filter((c) => c !== child) as ValueNodeItems;
 
       break;
     default:
@@ -144,7 +170,21 @@ export const hostConfig: HostConfig<
     node.setLocalValue(newText);
   },
 
-  clearContainer: (parent: JsonNode) => {},
+  clearContainer: (parent: JsonNode) => {
+    switch (parent.type) {
+      case "array":
+        parent.items = [];
+        break;
+      case "object":
+        parent.properties = [];
+        break;
+      case "property":
+        parent.valueNode = undefined;
+        break;
+      default:
+        break;
+    }
+  },
   removeChildFromContainer: removeChild,
   removeChild,
   finalizeInitialChildren: () => false,

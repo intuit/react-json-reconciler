@@ -1,3 +1,4 @@
+import { ProxyNode } from ".";
 import {
   ArrayNode,
   ObjectNode,
@@ -30,6 +31,9 @@ export interface JsonElements {
     /** The value of the node */
     value?: ValueType;
   } & WithChildrenAndRefAttributes<ValueNode>;
+
+  /** A node that shadows another */
+  proxy: WithChildrenAndRefAttributes<ProxyNode>;
 }
 
 declare global {

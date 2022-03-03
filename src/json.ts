@@ -1,7 +1,12 @@
-export type NodeType = "object" | "array" | "property" | "value";
+export type NodeType = "object" | "array" | "property" | "value" | "proxy";
 export type ValueType = number | boolean | null | string;
 
-export type JsonNode = ValueNode | ArrayNode | PropertyNode | ObjectNode;
+export type JsonNodeWithoutProxy =
+  | ValueNode
+  | ArrayNode
+  | PropertyNode
+  | ObjectNode;
+export type JsonNode = JsonNodeWithoutProxy | ProxyNode;
 
 export type JsonType =
   | ValueType
@@ -19,18 +24,20 @@ interface BaseJsonNode<T extends NodeType> {
   children?: Array<JsonNode>;
 }
 
+export type ValueNodeItems<T = ValueType> = [
+  {
+    /** The value of the node */
+    value: T | undefined;
+  },
+  ...ValueNode[]
+];
+
 /** A node that represents a primitive value */
 export class ValueNode<T extends ValueType = ValueType>
   implements BaseJsonNode<"value">
 {
   public readonly type: "value" = "value";
-  public items: [
-    {
-      /** The value of the node */
-      value: T | undefined;
-    },
-    ...ValueNode[]
-  ];
+  public items: ValueNodeItems<T>;
 
   public parent?: JsonNode;
 
@@ -99,6 +106,17 @@ export class PropertyNode implements BaseJsonNode<"property"> {
   }
 }
 
+/** A noop that just acts as a marker */
+export class ProxyNode implements BaseJsonNode<"proxy"> {
+  public readonly type: "proxy" = "proxy";
+  public value: JsonNode | undefined;
+  public parent?: JsonNode;
+
+  public get children() {
+    return this.value === undefined ? undefined : [this.value];
+  }
+}
+
 /** Convert a JSON object into an AST representation */
 export function fromJSON(value: JsonType): JsonNode {
   if (
@@ -131,10 +149,19 @@ export function fromJSON(value: JsonType): JsonNode {
 }
 
 /** Convert an AST structure into a JSON object */
-export function toJSON(node: JsonNode): JsonType {
+export function toJSON(node: JsonNode): JsonType | undefined {
   switch (node.type) {
     case "array":
-      return node.children.map((n) => toJSON(n));
+      return node.children.reduce<JsonType[]>((a, n) => {
+        if (n !== undefined) {
+          const next = toJSON(n);
+          if (next !== undefined) {
+            return [...a, next];
+          }
+        }
+
+        return a;
+      }, []);
     case "value":
       if (node.value === undefined) {
         throw new Error("Undefined is not a valid JSON value");
@@ -159,9 +186,17 @@ export function toJSON(node: JsonNode): JsonType {
       return obj;
     }
 
+    case "proxy":
+      if (node.value) {
+        return toJSON(node.value);
+      }
+
+      return undefined;
     case "property":
       throw new Error("Unexpected property");
     default:
-      throw new Error(`Unexpected node type: ${(node as any).type}`);
+      throw new Error(
+        `Unexpected node type: ${(node as BaseJsonNode<any>).type}`
+      );
   }
 }

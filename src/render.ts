@@ -1,9 +1,18 @@
 import React from "react";
 import reconciler from "react-reconciler";
+import { JsonNode } from ".";
 import { hostConfig } from "./host-config";
 import { ArrayNode, JsonType, toJSON } from "./json";
 
 const renderer = reconciler(hostConfig);
+
+/** Create a portal to render a JSON tree within a different subtree */
+export const createPortal = (
+  children: React.ReactNode,
+  container: JsonNode
+) => {
+  return renderer.createPortal(children, container, undefined, undefined);
+};
 
 /** Render the React tree into a JSON object. */
 export const render = async (root: React.ReactNode): Promise<JsonType> => {
@@ -15,5 +24,5 @@ export const render = async (root: React.ReactNode): Promise<JsonType> => {
   renderer.flushPassiveEffects();
   renderer.flushDiscreteUpdates();
 
-  return toJSON(container.items[0]);
+  return toJSON(container.items[0]) as JsonType;
 };
