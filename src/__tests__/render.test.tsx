@@ -167,7 +167,7 @@ describe("complex mutations", () => {
 
       if (proxyRef.current.parent?.parent?.parent?.type === "object") {
         proxyRef.current.parent.parent.parent.properties.push(
-          container.value as any
+          container.valueNode as any
         );
       }
     }, [container, proxyRef]);

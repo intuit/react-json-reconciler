@@ -20,8 +20,8 @@ function handleErrorInNextTick(error: Error) {
 /** Drill down and skip any proxy nodes to get the _real_ one */
 function getFirstNonProxyNode(n: JsonNode): JsonNodeWithoutProxy | undefined {
   if (n.type === "proxy") {
-    if (n.value && n.value?.type !== "proxy") {
-      return n.value;
+    if (n.valueNode && n.valueNode?.type !== "proxy") {
+      return n.valueNode;
     }
 
     return undefined;
@@ -78,7 +78,7 @@ function appendChild(parent: JsonNode, child: JsonNode) {
       parent.items.push(realChild);
       break;
     case "proxy":
-      parent.value = child;
+      parent.valueNode = child;
       break;
     default:
       throw new Error("Unknown type");
@@ -122,6 +122,7 @@ function removeChild(parent: JsonNode, child: JsonNode) {
       parent.properties = parent.properties.filter((c) => c !== child);
       break;
 
+    case "proxy":
     case "property":
       if (parent.valueNode === child) {
         parent.valueNode = undefined;
@@ -130,7 +131,6 @@ function removeChild(parent: JsonNode, child: JsonNode) {
       break;
     case "value":
       parent.items = parent.items.filter((c) => c !== child) as ValueNodeItems;
-
       break;
     default:
       throw new Error("Unknown type");

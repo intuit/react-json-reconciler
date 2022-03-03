@@ -109,11 +109,11 @@ export class PropertyNode implements BaseJsonNode<"property"> {
 /** A noop that just acts as a marker */
 export class ProxyNode implements BaseJsonNode<"proxy"> {
   public readonly type: "proxy" = "proxy";
-  public value: JsonNode | undefined;
+  public valueNode: JsonNode | undefined;
   public parent?: JsonNode;
 
   public get children() {
-    return this.value === undefined ? undefined : [this.value];
+    return this.valueNode === undefined ? undefined : [this.valueNode];
   }
 }
 
@@ -187,8 +187,8 @@ export function toJSON(node: JsonNode): JsonType | undefined {
     }
 
     case "proxy":
-      if (node.value) {
-        return toJSON(node.value);
+      if (node.valueNode) {
+        return toJSON(node.valueNode);
       }
 
       return undefined;
