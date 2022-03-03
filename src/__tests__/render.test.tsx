@@ -160,7 +160,7 @@ describe("complex mutations", () => {
     const container = React.useMemo(() => new ProxyNode(), []);
     const portal = createPortal(props.children, container);
     const proxyRef = React.useRef<ProxyNode>(null);
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
       if (!proxyRef.current) {
         return;
       }
@@ -179,13 +179,13 @@ describe("complex mutations", () => {
     const [value, setValue] = React.useState(0);
     const propRef = React.useRef<PropertyNode>(null);
 
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
       setValue(propRef.current?.children.length ?? 0);
-    }, [propRef]);
+    }, [propRef.current?.children.length]);
 
     return (
       <property ref={propRef} name="count">
-        <value>{value}</value>
+        <value value={value} />
       </property>
     );
   };
@@ -228,7 +228,9 @@ describe("complex mutations", () => {
     );
 
     expect(content).toStrictEqual({
-      root: {},
+      root: {
+        count: 0,
+      },
       nested: "property",
     });
   });

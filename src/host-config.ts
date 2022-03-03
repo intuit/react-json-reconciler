@@ -140,7 +140,7 @@ function removeChild(parent: JsonNode, child: JsonNode) {
 export const hostConfig: HostConfig<
   keyof JsonElements,
   any,
-  ArrayNode,
+  ProxyNode,
   JsonNode,
   ValueNode,
   never,
