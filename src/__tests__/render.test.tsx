@@ -1,5 +1,5 @@
-import React from "react";
-import { render } from "..";
+import React, { PropsWithChildren } from "react";
+import { createPortal, ProxyNode, render } from "..";
 import {
   ArrayNode,
   JsonType,
@@ -134,5 +134,104 @@ describe("refs", () => {
     const element = <Custom />;
 
     expect(await render(element)).toStrictEqual(["1", "2"]);
+  });
+});
+
+describe("proxy", () => {
+  it("ignores any proxy objects", async () => {
+    const result = await render(
+      <object>
+        <property name="foo">
+          <proxy>
+            <value>bar</value>
+          </proxy>
+        </property>
+      </object>
+    );
+
+    expect(result).toStrictEqual({
+      foo: "bar",
+    });
+  });
+});
+
+describe("complex mutations", () => {
+  const TreeParentMoving = (props: PropsWithChildren<unknown>) => {
+    const container = React.useMemo(() => new ProxyNode(), []);
+    const portal = createPortal(props.children, container);
+    const proxyRef = React.useRef<ProxyNode>(null);
+    React.useLayoutEffect(() => {
+      if (!proxyRef.current) {
+        return;
+      }
+
+      if (proxyRef.current.parent?.parent?.parent?.type === "object") {
+        proxyRef.current.parent.parent.parent.properties.push(
+          container.valueNode as any
+        );
+      }
+    }, [container, proxyRef]);
+
+    return <proxy ref={proxyRef}>{portal}</proxy>;
+  };
+
+  const DelayedUpdate = () => {
+    const [value, setValue] = React.useState(0);
+    const propRef = React.useRef<PropertyNode>(null);
+
+    React.useLayoutEffect(() => {
+      setValue(propRef.current?.children.length ?? 0);
+    }, [propRef.current?.children.length]);
+
+    return (
+      <property ref={propRef} name="count">
+        <value value={value} />
+      </property>
+    );
+  };
+
+  it("works with nested components", async () => {
+    const content = await render(
+      <object>
+        <property name="root">
+          <object>
+            <TreeParentMoving>
+              <property name="nested">
+                <value value="property" />
+              </property>
+            </TreeParentMoving>
+          </object>
+        </property>
+      </object>
+    );
+
+    expect(content).toStrictEqual({
+      root: {},
+      nested: "property",
+    });
+  });
+
+  it("works with dynamic properties", async () => {
+    const content = await render(
+      <object>
+        <property name="root">
+          <object>
+            <DelayedUpdate />
+            <TreeParentMoving>
+              <property name="nested">
+                <value value="property" />
+              </property>
+            </TreeParentMoving>
+          </object>
+        </property>
+      </object>
+    );
+
+    expect(content).toStrictEqual({
+      root: {
+        count: 0,
+      },
+      nested: "property",
+    });
   });
 });
