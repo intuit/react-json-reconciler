@@ -1,3 +1,15 @@
+# v1.1.0 (Tue Mar 08 2022)
+
+#### 🚀 Enhancement
+
+- Add support for portals, and transparent proxy object [#3](https://github.com/intuit/react-json-reconciler/pull/3) ([@adierkens](https://github.com/adierkens))
+
+#### Authors: 1
+
+- Adam Dierkens ([@adierkens](https://github.com/adierkens))
+
+---
+
 # v1.0.4 (Mon Feb 28 2022)
 
 #### 🐛 Bug Fix
