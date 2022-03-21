@@ -17,68 +17,52 @@ function handleErrorInNextTick(error: Error) {
   });
 }
 
-/** Drill down and skip any proxy nodes to get the _real_ one */
-function getFirstNonProxyNode(n: JsonNode): JsonNodeWithoutProxy | undefined {
-  if (n.type === "proxy") {
-    if (n.valueNode && n.valueNode?.type !== "proxy") {
-      return n.valueNode;
-    }
-
-    return undefined;
-  }
-
-  return n;
-}
+/** Validate that the given child can appear in the parent */
+function validateNesting(parent: JsonNode, child: JsonNode): void {}
 
 /** Append a child to a parent node */
 function appendChild(parent: JsonNode, child: JsonNode) {
   child.parent = parent;
-  const realChild = getFirstNonProxyNode(child);
 
-  if (realChild === undefined) {
-    return parent;
-  }
-
-  realChild.parent = parent;
+  validateNesting(parent, child);
 
   switch (parent.type) {
     case "array":
-      if (realChild.type === "property") {
-        throw new Error("Property cannot be a child of an array");
-      }
+      // if (realChild.type === "property") {
+      //   throw new Error("Property cannot be a child of an array");
+      // }
 
-      parent.items.push(realChild);
-      realChild.parent = parent;
+      parent.items.push(child);
       break;
     case "object":
-      if (realChild.type !== "property") {
-        throw new Error("Objects can only have property children");
-      }
+      // if (realChild.type !== "property") {
+      //   throw new Error("Objects can only have property children");
+      // }
 
-      parent.children.push(realChild);
+      parent.children.push(child as any);
       break;
     case "property":
-      if (realChild.type === "property") {
-        throw new Error("Property cannot be a child of a property");
-      }
+      // if (realChild.type === "property") {
+      //   throw new Error("Property cannot be a child of a property");
+      // }
 
       if (parent.valueNode) {
-        parent.valueNode = appendChild(parent.valueNode, realChild);
+        parent.valueNode = appendChild(parent.valueNode, child);
       } else {
-        parent.valueNode = realChild;
+        parent.valueNode = child;
       }
 
       break;
     case "value":
-      if (realChild.type !== "value") {
-        throw new Error("Unable to append child to value");
-      }
+      // if (realChild.type !== "value") {
+      //   throw new Error("Unable to append child to value");
+      // }
 
       // Concat the things together as strings
-      parent.items.push(realChild);
+      parent.items.push(child as any);
       break;
     case "proxy":
-      parent.valueNode = child;
+      parent.items.push(child);
       break;
     default:
       throw new Error("Unknown type");
@@ -114,6 +98,7 @@ function createInstance<T extends keyof JsonElements>(
 /** remove a child from the node */
 function removeChild(parent: JsonNode, child: JsonNode) {
   switch (parent.type) {
+    case "proxy":
     case "array":
       parent.items = parent.items.filter((c) => c !== child);
       break;
@@ -122,7 +107,6 @@ function removeChild(parent: JsonNode, child: JsonNode) {
       parent.properties = parent.properties.filter((c) => c !== child);
       break;
 
-    case "proxy":
     case "property":
       if (parent.valueNode === child) {
         parent.valueNode = undefined;
