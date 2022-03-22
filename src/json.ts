@@ -60,7 +60,10 @@ export class ValueNode<T extends ValueType = ValueType>
       return this.items[0].value as T;
     }
 
-    return this.items.map((i) => i.value).join("");
+    return this.items
+      .map((i) => i.value)
+      .filter((i) => i !== undefined)
+      .join("");
   }
 }
 
@@ -174,10 +177,6 @@ export function toJSON(node: JsonNode): JsonType | undefined {
         return a;
       }, []);
     case "value":
-      if (node.value === undefined) {
-        throw new Error("Undefined is not a valid JSON value");
-      }
-
       return node.value;
     case "object": {
       const obj: Record<string, any> = {};
@@ -186,11 +185,9 @@ export function toJSON(node: JsonNode): JsonType | undefined {
         if (prop.valueNode) {
           const key = prop.keyNode.value;
 
-          if (key === undefined) {
-            throw new Error("Unable to construct object with undefined key");
+          if (key !== undefined) {
+            obj[key] = toJSON(prop.valueNode);
           }
-
-          obj[key] = toJSON(prop.valueNode);
         }
       });
 

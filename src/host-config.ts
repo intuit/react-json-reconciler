@@ -87,7 +87,7 @@ function createInstance<T extends keyof JsonElements>(
         new ValueNode((props as JsonElements["property"]).name)
       );
     case "value":
-      return new ValueNode((props as JsonElements["value"]).value ?? null);
+      return new ValueNode((props as JsonElements["value"]).value);
     case "proxy":
       return new ProxyNode();
     default:
