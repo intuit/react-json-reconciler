@@ -153,6 +153,29 @@ describe("proxy", () => {
       foo: "bar",
     });
   });
+
+  it("works for multiple children", async () => {
+    const result = await render(
+      <array>
+        <proxy>
+          <value>foo</value>
+          <value>bar</value>
+        </proxy>
+        <object>
+          <proxy>
+            <property name="foo">
+              <value>bar</value>
+            </property>
+            <property name="baz">
+              <value>bar</value>
+            </property>
+          </proxy>
+        </object>
+      </array>
+    );
+
+    expect(result).toStrictEqual(["foo", "bar", { foo: "bar", baz: "bar" }]);
+  });
 });
 
 describe("complex mutations", () => {
@@ -167,7 +190,7 @@ describe("complex mutations", () => {
 
       if (proxyRef.current.parent?.parent?.parent?.type === "object") {
         proxyRef.current.parent.parent.parent.properties.push(
-          container.valueNode as any
+          container.children[0] as any
         );
       }
     }, [container, proxyRef]);

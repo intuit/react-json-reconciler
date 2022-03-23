@@ -60,7 +60,10 @@ export class ValueNode<T extends ValueType = ValueType>
       return this.items[0].value as T;
     }
 
-    return this.items.map((i) => i.value).join("");
+    return this.items
+      .map((i) => i.value)
+      .filter((i) => i !== undefined)
+      .join("");
   }
 }
 
@@ -109,11 +112,15 @@ export class PropertyNode implements BaseJsonNode<"property"> {
 /** A noop that just acts as a marker */
 export class ProxyNode implements BaseJsonNode<"proxy"> {
   public readonly type: "proxy" = "proxy";
-  public valueNode: JsonNode | undefined;
+  public items: JsonNode[] = [];
   public parent?: JsonNode;
 
+  constructor(items: JsonNode[] = []) {
+    this.items = items;
+  }
+
   public get children() {
-    return this.valueNode === undefined ? undefined : [this.valueNode];
+    return this.items;
   }
 }
 
@@ -148,11 +155,22 @@ export function fromJSON(value: JsonType): JsonNode {
   throw new Error(`Unsupported value conversion from type: ${typeof value}`);
 }
 
+/** Remove any ProxyNodes from the array */
+export function flattenNodes(nodes: JsonNode[]): JsonNode[] {
+  return nodes.flatMap((n) => {
+    if (n.type === "proxy") {
+      return flattenNodes(n.items);
+    }
+
+    return n;
+  });
+}
+
 /** Convert an AST structure into a JSON object */
 export function toJSON(node: JsonNode): JsonType | undefined {
   switch (node.type) {
     case "array":
-      return node.children.reduce<JsonType[]>((a, n) => {
+      return flattenNodes(node.children).reduce<JsonType[]>((a, n) => {
         if (n !== undefined) {
           const next = toJSON(n);
           if (next !== undefined) {
@@ -163,35 +181,33 @@ export function toJSON(node: JsonNode): JsonType | undefined {
         return a;
       }, []);
     case "value":
-      if (node.value === undefined) {
-        throw new Error("Undefined is not a valid JSON value");
-      }
-
       return node.value;
     case "object": {
-      const obj: Record<string, any> = {};
-
-      node.properties.forEach((prop) => {
+      return (flattenNodes(node.properties) as PropertyNode[]).reduce<
+        Record<string, any>
+      >((obj, prop) => {
         if (prop.valueNode) {
           const key = prop.keyNode.value;
 
-          if (key === undefined) {
-            throw new Error("Unable to construct object with undefined key");
+          if (key !== undefined) {
+            obj[key] = toJSON(prop.valueNode);
           }
-
-          obj[key] = toJSON(prop.valueNode);
         }
-      });
 
-      return obj;
+        return obj;
+      }, {});
     }
 
     case "proxy":
-      if (node.valueNode) {
-        return toJSON(node.valueNode);
+      if (node.children.length === 0) {
+        return;
       }
 
-      return undefined;
+      if (node.children.length === 1) {
+        return toJSON(node.children[0]);
+      }
+
+      throw new Error("Cannot convert proxy node to value");
     case "property":
       throw new Error("Unexpected property");
     default:
