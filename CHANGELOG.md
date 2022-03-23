@@ -1,3 +1,28 @@
+# v1.2.0 (Wed Mar 23 2022)
+
+### Release Notes
+
+#### Allow ProxyNodes to appear anywhere in the tree ([#5](https://github.com/intuit/react-json-reconciler/pull/5))
+
+Allow the `ProxyNode` to appear anywhere in the JSON Tree. It acts as a `Fragment` when containing multiple children (array-items, object-properties)
+
+---
+
+#### 🚀 Enhancement
+
+- Allow ProxyNodes to appear anywhere in the tree [#5](https://github.com/intuit/react-json-reconciler/pull/5) ([@adierkens](https://github.com/adierkens))
+
+#### 📝 Documentation
+
+- enhance github ISSUE_TEMPLATE files [#4](https://github.com/intuit/react-json-reconciler/pull/4) ([@cliffordfajardo](https://github.com/cliffordfajardo))
+
+#### Authors: 2
+
+- Adam Dierkens ([@adierkens](https://github.com/adierkens))
+- Clifford Fajardo  ([@cliffordfajardo](https://github.com/cliffordfajardo))
+
+---
+
 # v1.1.0 (Tue Mar 08 2022)
 
 #### 🚀 Enhancement
