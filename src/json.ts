@@ -115,6 +115,10 @@ export class ProxyNode implements BaseJsonNode<"proxy"> {
   public items: JsonNode[] = [];
   public parent?: JsonNode;
 
+  constructor(items: JsonNode[] = []) {
+    this.items = items;
+  }
+
   public get children() {
     return this.items;
   }
@@ -179,9 +183,9 @@ export function toJSON(node: JsonNode): JsonType | undefined {
     case "value":
       return node.value;
     case "object": {
-      const obj: Record<string, any> = {};
-
-      (flattenNodes(node.properties) as PropertyNode[]).forEach((prop) => {
+      return (flattenNodes(node.properties) as PropertyNode[]).reduce<
+        Record<string, any>
+      >((obj, prop) => {
         if (prop.valueNode) {
           const key = prop.keyNode.value;
 
@@ -189,9 +193,9 @@ export function toJSON(node: JsonNode): JsonType | undefined {
             obj[key] = toJSON(prop.valueNode);
           }
         }
-      });
 
-      return obj;
+        return obj;
+      }, {});
     }
 
     case "proxy":

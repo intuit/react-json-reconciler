@@ -1,5 +1,5 @@
 import { HostConfig } from "react-reconciler";
-import { JsonNodeWithoutProxy, ProxyNode, ValueNodeItems } from ".";
+import { ProxyNode, ValueNodeItems } from ".";
 import {
   ArrayNode,
   JsonNode,
@@ -18,7 +18,41 @@ function handleErrorInNextTick(error: Error) {
 }
 
 /** Validate that the given child can appear in the parent */
-function validateNesting(parent: JsonNode, child: JsonNode): void {}
+export function validateNesting(parent: JsonNode, child: JsonNode): void {
+  if (child.type === "proxy") {
+    child.items.forEach((proxyItem) => {
+      validateNesting(parent, proxyItem);
+    });
+
+    return;
+  }
+
+  if (parent.type === "array") {
+    if (child.type === "property") {
+      throw new Error("A Property cannot appear as a child to an arry");
+    }
+
+    return;
+  }
+
+  if (parent.type === "object") {
+    if (child.type !== "property") {
+      throw new Error(
+        `Objects can only contain property children. Found: ${child.type}`
+      );
+    }
+
+    return;
+  }
+
+  if (parent.type === "value") {
+    if (child.type !== "value") {
+      throw new Error(
+        `Values can only contain other values. Found: ${child.type}`
+      );
+    }
+  }
+}
 
 /** Append a child to a parent node */
 function appendChild(parent: JsonNode, child: JsonNode) {
@@ -28,24 +62,12 @@ function appendChild(parent: JsonNode, child: JsonNode) {
 
   switch (parent.type) {
     case "array":
-      // if (realChild.type === "property") {
-      //   throw new Error("Property cannot be a child of an array");
-      // }
-
       parent.items.push(child);
       break;
     case "object":
-      // if (realChild.type !== "property") {
-      //   throw new Error("Objects can only have property children");
-      // }
-
       parent.children.push(child as any);
       break;
     case "property":
-      // if (realChild.type === "property") {
-      //   throw new Error("Property cannot be a child of a property");
-      // }
-
       if (parent.valueNode) {
         parent.valueNode = appendChild(parent.valueNode, child);
       } else {
@@ -54,11 +76,6 @@ function appendChild(parent: JsonNode, child: JsonNode) {
 
       break;
     case "value":
-      // if (realChild.type !== "value") {
-      //   throw new Error("Unable to append child to value");
-      // }
-
-      // Concat the things together as strings
       parent.items.push(child as any);
       break;
     case "proxy":
@@ -91,7 +108,7 @@ function createInstance<T extends keyof JsonElements>(
     case "proxy":
       return new ProxyNode();
     default:
-      throw new Error("idk what to do");
+      throw new Error(`Cannot create instance of type: ${type}`);
   }
 }
 
