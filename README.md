@@ -95,6 +95,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://github.com/adierkens"><img src="https://avatars.githubusercontent.com/u/13004162?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Adam Dierkens</b></sub></a><br /><a href="https://github.com/intuit/react-json-reconciler/commits?author=adierkens" title="Code">💻</a> <a href="https://github.com/intuit/react-json-reconciler/commits?author=adierkens" title="Documentation">📖</a> <a href="#example-adierkens" title="Examples">💡</a> <a href="#infra-adierkens" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-adierkens" title="Maintenance">🚧</a> <a href="#platform-adierkens" title="Packaging/porting to new platform">📦</a> <a href="https://github.com/intuit/react-json-reconciler/commits?author=adierkens" title="Tests">⚠️</a> <a href="#tool-adierkens" title="Tools">🔧</a></td>
+    <td align="center"><a href="https://github.com/cliffordfajardo"><img src="https://avatars.githubusercontent.com/u/6743796?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Clifford Fajardo </b></sub></a><br /><a href="#infra-cliffordfajardo" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
 </table>
 

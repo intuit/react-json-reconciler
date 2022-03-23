@@ -25,6 +25,15 @@
         "test",
         "tool"
       ]
+    },
+    {
+      "login": "cliffordfajardo",
+      "name": "Clifford Fajardo ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6743796?v=4",
+      "profile": "https://github.com/cliffordfajardo",
+      "contributions": [
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7
