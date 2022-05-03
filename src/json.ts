@@ -13,6 +13,12 @@ export type JsonType =
   | Array<JsonType>
   | { [key: string]: JsonType };
 
+export type JsonTypeWithUndefined =
+  | ValueType
+  | undefined
+  | Array<JsonTypeWithUndefined>
+  | { [key: string]: JsonTypeWithUndefined };
+
 interface BaseJsonNode<T extends NodeType> {
   /** The node type */
   readonly type: T;
@@ -125,7 +131,11 @@ export class ProxyNode implements BaseJsonNode<"proxy"> {
 }
 
 /** Convert a JSON object into an AST representation */
-export function fromJSON(value: JsonType): JsonNode {
+export function fromJSON(value: JsonTypeWithUndefined): JsonNode | undefined {
+  if (value === undefined) {
+    return;
+  }
+
   if (
     typeof value === "string" ||
     typeof value === "number" ||
@@ -137,17 +147,30 @@ export function fromJSON(value: JsonType): JsonNode {
 
   if (Array.isArray(value)) {
     const arr = new ArrayNode();
-    arr.items = value.map((c) => fromJSON(c));
+    arr.items = value.reduce<Array<JsonNode>>((allItems, next) => {
+      if (next !== undefined) {
+        const nextResolved = fromJSON(next);
+        if (nextResolved) {
+          allItems.push(nextResolved);
+        }
+      }
+
+      return allItems;
+    }, []);
     return arr;
   }
 
   if (typeof value === "object") {
     const obj = new ObjectNode();
-    obj.properties = Object.entries(value).map(([key, val]) => {
-      const prop = new PropertyNode(new ValueNode(key));
-      prop.valueNode = fromJSON(val);
-      return prop;
-    });
+    obj.properties = Object.entries(value)
+      .filter(([key, val]) => {
+        return val !== undefined;
+      })
+      .map(([key, val]) => {
+        const prop = new PropertyNode(new ValueNode(key));
+        prop.valueNode = fromJSON(val);
+        return prop;
+      });
 
     return obj;
   }
