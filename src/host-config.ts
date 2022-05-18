@@ -1,10 +1,12 @@
-import { HostConfig } from "react-reconciler";
+/* eslint-disable no-underscore-dangle */
+import { Fiber, HostConfig } from "react-reconciler";
 import { ProxyNode, ValueNodeItems } from ".";
 import {
   ArrayNode,
   JsonNode,
   ObjectNode,
   PropertyNode,
+  SourceLocation,
   ValueNode,
 } from "./json";
 import { JsonElements } from "./types";
@@ -88,28 +90,57 @@ function appendChild(parent: JsonNode, child: JsonNode) {
   return parent;
 }
 
+/** Get the source from react (when using development build of @babel/preset-react) */
+function getSourceLocation(f: Fiber): SourceLocation | undefined {
+  if (f._debugSource) {
+    return {
+      columnNumber: 0,
+      ...f._debugSource,
+    };
+  }
+
+  if (f._debugOwner) {
+    return getSourceLocation(f._debugOwner);
+  }
+}
+
 /** Create an instance of the given element type */
 function createInstance<T extends keyof JsonElements>(
   type: T,
-  props: JsonElements[T]
+  props: JsonElements[T],
+  rootContainer: ProxyNode,
+  hostContext: unknown,
+  handle: Fiber
 ): JsonNode {
+  const source = getSourceLocation(handle);
+
+  let node: JsonNode;
+
   switch (type) {
     case "array":
-      return new ArrayNode();
+      node = new ArrayNode();
+      break;
     case "obj":
     case "object":
-      return new ObjectNode();
+      node = new ObjectNode();
+      break;
     case "property":
-      return new PropertyNode(
+      node = new PropertyNode(
         new ValueNode((props as JsonElements["property"]).name)
       );
+      break;
     case "value":
-      return new ValueNode((props as JsonElements["value"]).value);
+      node = new ValueNode((props as JsonElements["value"]).value);
+      break;
     case "proxy":
-      return new ProxyNode();
+      node = new ProxyNode();
+      break;
     default:
       throw new Error(`Cannot create instance of type: ${type}`);
   }
+
+  node.source = source;
+  return node;
 }
 
 /** remove a child from the node */
