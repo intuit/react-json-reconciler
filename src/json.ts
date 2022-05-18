@@ -13,6 +13,15 @@ export type JsonType =
   | Array<JsonType>
   | { [key: string]: JsonType };
 
+export interface SourceLocation {
+  /** The filename for the original location of this node */
+  fileName: string;
+  /** The original line number in the file */
+  lineNumber: number;
+  /** The column number for the start of this node */
+  columnNumber: number;
+}
+
 interface BaseJsonNode<T extends NodeType> {
   /** The node type */
   readonly type: T;
@@ -22,6 +31,9 @@ interface BaseJsonNode<T extends NodeType> {
 
   /** Any children of this node */
   children?: Array<JsonNode>;
+
+  /** The location of the original source */
+  source?: SourceLocation;
 }
 
 export type ValueNodeItems<T = ValueType> = [
@@ -38,6 +50,7 @@ export class ValueNode<T extends ValueType = ValueType>
 {
   public readonly type: "value" = "value";
   public items: ValueNodeItems<T>;
+  public source?: SourceLocation;
 
   public parent?: JsonNode;
 
@@ -72,6 +85,7 @@ export class ArrayNode implements BaseJsonNode<"array"> {
   public readonly type: "array" = "array";
   public parent?: JsonNode;
   public items: JsonNode[] = [];
+  public source?: SourceLocation;
 
   public get children() {
     return this.items;
@@ -82,6 +96,7 @@ export class ArrayNode implements BaseJsonNode<"array"> {
 export class ObjectNode implements BaseJsonNode<"object"> {
   public readonly type: "object" = "object";
   public parent?: JsonNode;
+  public source?: SourceLocation;
 
   public properties: PropertyNode[] = [];
 
@@ -94,6 +109,7 @@ export class ObjectNode implements BaseJsonNode<"object"> {
 export class PropertyNode implements BaseJsonNode<"property"> {
   public readonly type: "property" = "property";
 
+  public source?: SourceLocation;
   public keyNode: ValueNode<string>;
   public parent?: JsonNode;
 
@@ -114,6 +130,7 @@ export class ProxyNode implements BaseJsonNode<"proxy"> {
   public readonly type: "proxy" = "proxy";
   public items: JsonNode[] = [];
   public parent?: JsonNode;
+  public source?: SourceLocation;
 
   constructor(items: JsonNode[] = []) {
     this.items = items;

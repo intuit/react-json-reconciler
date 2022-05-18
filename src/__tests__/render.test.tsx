@@ -36,7 +36,7 @@ const TEST_CASES: Array<
 test.each(TEST_CASES)(
   "%s",
   async (name: string, element: React.ReactNode, expectedJson: JsonType) => {
-    expect(await render(element)).toStrictEqual(expectedJson);
+    expect((await render(element)).jsonValue).toStrictEqual(expectedJson);
   }
 );
 
@@ -55,7 +55,7 @@ describe("refs", () => {
     const element = <CustomNode />;
 
     expect.assertions(2);
-    expect(await render(element)).toStrictEqual({});
+    expect((await render(element)).jsonValue).toStrictEqual({});
   });
 
   it("attaches the refs to a property", async () => {
@@ -78,7 +78,9 @@ describe("refs", () => {
     const element = <CustomNode />;
 
     expect.assertions(2);
-    expect(await render(element)).toStrictEqual({ "Test Key": "Test Prop" });
+    expect((await render(element)).jsonValue).toStrictEqual({
+      "Test Key": "Test Prop",
+    });
   });
 
   it("attaches the refs to an array", async () => {
@@ -95,7 +97,7 @@ describe("refs", () => {
     const element = <CustomNode />;
 
     expect.assertions(2);
-    expect(await render(element)).toStrictEqual([]);
+    expect((await render(element)).jsonValue).toStrictEqual([]);
   });
 
   it("attaches the refs to a value", async () => {
@@ -112,7 +114,7 @@ describe("refs", () => {
     const element = <CustomNode />;
 
     expect.assertions(2);
-    expect(await render(element)).toStrictEqual("Foo");
+    expect((await render(element)).jsonValue).toStrictEqual("Foo");
   });
 
   it("removes items from a container", async () => {
@@ -133,7 +135,7 @@ describe("refs", () => {
 
     const element = <Custom />;
 
-    expect(await render(element)).toStrictEqual(["1", "2"]);
+    expect((await render(element)).jsonValue).toStrictEqual(["1", "2"]);
   });
 });
 
@@ -149,7 +151,7 @@ describe("proxy", () => {
       </object>
     );
 
-    expect(result).toStrictEqual({
+    expect(result.jsonValue).toStrictEqual({
       foo: "bar",
     });
   });
@@ -174,7 +176,11 @@ describe("proxy", () => {
       </array>
     );
 
-    expect(result).toStrictEqual(["foo", "bar", { foo: "bar", baz: "bar" }]);
+    expect(result.jsonValue).toStrictEqual([
+      "foo",
+      "bar",
+      { foo: "bar", baz: "bar" },
+    ]);
   });
 });
 
@@ -228,7 +234,7 @@ describe("complex mutations", () => {
       </object>
     );
 
-    expect(content).toStrictEqual({
+    expect(content.jsonValue).toStrictEqual({
       root: {},
       nested: "property",
     });
@@ -250,7 +256,7 @@ describe("complex mutations", () => {
       </object>
     );
 
-    expect(content).toStrictEqual({
+    expect(content.jsonValue).toStrictEqual({
       root: {
         count: 0,
       },
