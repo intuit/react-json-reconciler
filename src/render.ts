@@ -59,7 +59,7 @@ const createSourceMap = (
       sourceMap.addMapping({
         original: {
           line: sourcePosition.lineNumber,
-          column: sourcePosition.columnNumber,
+          column: sourcePosition.columnNumber ?? 1,
         },
         generated: {
           line: genPosition.value.line + 1,
@@ -75,7 +75,11 @@ const createSourceMap = (
 
 /** Render the React tree into a JSON object. */
 export const render = async (
-  root: React.ReactNode
+  root: React.ReactNode,
+  options?: {
+    /** Try to get source map info for the render */
+    collectSourceMap?: boolean;
+  }
 ): Promise<{
   /** The JSON object value of the node */
   jsonValue: JsonType;
@@ -86,7 +90,7 @@ export const render = async (
   stringValue: string;
 
   /** The source-map for the string-value */
-  sourceMap: string;
+  sourceMap?: string;
 }> => {
   const container = new ProxyNode();
   (container as any).root = true;
@@ -101,8 +105,11 @@ export const render = async (
 
   return {
     jsonValue,
-    sourceMap: createSourceMap(stringValue.pointers, container),
-    stringValue: stringValue.json,
+    sourceMap:
+      jsonValue === null || options?.collectSourceMap !== true
+        ? undefined
+        : createSourceMap(stringValue.pointers, container),
+    stringValue: stringValue?.json ?? "null",
     jsonNode: container,
   };
 };

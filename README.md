@@ -43,7 +43,7 @@ const element = (
   </obj>
 );
 
-const jsonValue = await render(element);
+const { jsonValue } = await render(element);
 ```
 
 The above will generate
@@ -54,6 +54,12 @@ The above will generate
   "Prop 2": "Value 2"
 }
 ```
+
+### Source Maps
+
+In order to generate source-map support, `React` must be in _development_ mode (`process.env.NODE_ENV != 'production'`), and the [@babel/plugin-transform-react-jsx-source](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx-source) plugin enabled (included as part of `@babel/preset-react`)
+
+Pass the `collectSourceMap: true` option to the `render` method.
 
 ### Refs
 

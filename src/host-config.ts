@@ -21,6 +21,24 @@ function handleErrorInNextTick(error: Error) {
 
 /** Validate that the given child can appear in the parent */
 export function validateNesting(parent: JsonNode, child: JsonNode): void {
+  const locationDebugInfo = [
+    child.source &&
+      `\t↳ Child(${parent.type}) ${child.source.fileName}:${child.source.lineNumber}`,
+    parent.source &&
+      `\t↳ Parent(${child.type}) ${parent.source.fileName}:${parent.source.lineNumber}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  /** Create an error message with contextual source node info */
+  const createMessage = (msg: string) => {
+    if (locationDebugInfo) {
+      return `${msg}\n${locationDebugInfo}`;
+    }
+
+    return msg;
+  };
+
   if (child.type === "proxy") {
     child.items.forEach((proxyItem) => {
       validateNesting(parent, proxyItem);
@@ -31,7 +49,9 @@ export function validateNesting(parent: JsonNode, child: JsonNode): void {
 
   if (parent.type === "array") {
     if (child.type === "property") {
-      throw new Error("A Property cannot appear as a child to an arry");
+      throw new Error(
+        createMessage("A Property cannot appear as a child to an array")
+      );
     }
 
     return;
@@ -40,7 +60,9 @@ export function validateNesting(parent: JsonNode, child: JsonNode): void {
   if (parent.type === "object") {
     if (child.type !== "property") {
       throw new Error(
-        `Objects can only contain property children. Found: ${child.type}`
+        createMessage(
+          `Objects can only contain property children. Found: ${child.type}`
+        )
       );
     }
 
@@ -50,7 +72,9 @@ export function validateNesting(parent: JsonNode, child: JsonNode): void {
   if (parent.type === "value") {
     if (child.type !== "value") {
       throw new Error(
-        `Values can only contain other values. Found: ${child.type}`
+        createMessage(
+          `Values can only contain other values. Found: ${child.type}`
+        )
       );
     }
   }
@@ -94,7 +118,7 @@ function appendChild(parent: JsonNode, child: JsonNode) {
 function getSourceLocation(f: Fiber): SourceLocation | undefined {
   if (f._debugSource) {
     return {
-      columnNumber: 0,
+      columnNumber: 1,
       ...f._debugSource,
     };
   }
