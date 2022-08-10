@@ -1,3 +1,15 @@
+# v2.0.0 (Wed Aug 10 2022)
+
+#### 💥 Breaking Change
+
+- Generate sourcemaps from react nodes [#7](https://github.com/intuit/react-json-reconciler/pull/7) ([@adierkens](https://github.com/adierkens))
+
+#### Authors: 1
+
+- Adam Dierkens ([@adierkens](https://github.com/adierkens))
+
+---
+
 # v1.2.0 (Wed Mar 23 2022)
 
 ### Release Notes
