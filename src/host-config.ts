@@ -1,10 +1,12 @@
-import { HostConfig } from "react-reconciler";
+/* eslint-disable no-underscore-dangle */
+import { Fiber, HostConfig } from "react-reconciler";
 import { ProxyNode, ValueNodeItems } from ".";
 import {
   ArrayNode,
   JsonNode,
   ObjectNode,
   PropertyNode,
+  SourceLocation,
   ValueNode,
 } from "./json";
 import { JsonElements } from "./types";
@@ -19,6 +21,24 @@ function handleErrorInNextTick(error: Error) {
 
 /** Validate that the given child can appear in the parent */
 export function validateNesting(parent: JsonNode, child: JsonNode): void {
+  const locationDebugInfo = [
+    child.source &&
+      `\t↳ Child(${parent.type}) ${child.source.fileName}:${child.source.lineNumber}`,
+    parent.source &&
+      `\t↳ Parent(${child.type}) ${parent.source.fileName}:${parent.source.lineNumber}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  /** Create an error message with contextual source node info */
+  const createMessage = (msg: string) => {
+    if (locationDebugInfo) {
+      return `${msg}\n${locationDebugInfo}`;
+    }
+
+    return msg;
+  };
+
   if (child.type === "proxy") {
     child.items.forEach((proxyItem) => {
       validateNesting(parent, proxyItem);
@@ -29,7 +49,9 @@ export function validateNesting(parent: JsonNode, child: JsonNode): void {
 
   if (parent.type === "array") {
     if (child.type === "property") {
-      throw new Error("A Property cannot appear as a child to an arry");
+      throw new Error(
+        createMessage("A Property cannot appear as a child to an array")
+      );
     }
 
     return;
@@ -38,7 +60,9 @@ export function validateNesting(parent: JsonNode, child: JsonNode): void {
   if (parent.type === "object") {
     if (child.type !== "property") {
       throw new Error(
-        `Objects can only contain property children. Found: ${child.type}`
+        createMessage(
+          `Objects can only contain property children. Found: ${child.type}`
+        )
       );
     }
 
@@ -48,7 +72,9 @@ export function validateNesting(parent: JsonNode, child: JsonNode): void {
   if (parent.type === "value") {
     if (child.type !== "value") {
       throw new Error(
-        `Values can only contain other values. Found: ${child.type}`
+        createMessage(
+          `Values can only contain other values. Found: ${child.type}`
+        )
       );
     }
   }
@@ -88,28 +114,57 @@ function appendChild(parent: JsonNode, child: JsonNode) {
   return parent;
 }
 
+/** Get the source from react (when using development build of @babel/preset-react) */
+function getSourceLocation(f: Fiber): SourceLocation | undefined {
+  if (f._debugSource) {
+    return {
+      columnNumber: 1,
+      ...f._debugSource,
+    };
+  }
+
+  if (f._debugOwner) {
+    return getSourceLocation(f._debugOwner);
+  }
+}
+
 /** Create an instance of the given element type */
 function createInstance<T extends keyof JsonElements>(
   type: T,
-  props: JsonElements[T]
+  props: JsonElements[T],
+  rootContainer: ProxyNode,
+  hostContext: unknown,
+  handle: Fiber
 ): JsonNode {
+  const source = getSourceLocation(handle);
+
+  let node: JsonNode;
+
   switch (type) {
     case "array":
-      return new ArrayNode();
+      node = new ArrayNode();
+      break;
     case "obj":
     case "object":
-      return new ObjectNode();
+      node = new ObjectNode();
+      break;
     case "property":
-      return new PropertyNode(
+      node = new PropertyNode(
         new ValueNode((props as JsonElements["property"]).name)
       );
+      break;
     case "value":
-      return new ValueNode((props as JsonElements["value"]).value);
+      node = new ValueNode((props as JsonElements["value"]).value);
+      break;
     case "proxy":
-      return new ProxyNode();
+      node = new ProxyNode();
+      break;
     default:
       throw new Error(`Cannot create instance of type: ${type}`);
   }
+
+  node.source = source;
+  return node;
 }
 
 /** remove a child from the node */

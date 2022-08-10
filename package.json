@@ -44,7 +44,9 @@
   },
   "dependencies": {
     "@types/react-reconciler": "^0.26.1",
+    "json-source-map": "^0.6.1",
     "react-flatten-children": "^1.1.2",
-    "react-reconciler": "^0.26.2"
+    "react-reconciler": "^0.26.2",
+    "source-map-js": "^1.0.2"
   }
 }
