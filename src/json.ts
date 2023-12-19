@@ -48,7 +48,7 @@ export type ValueNodeItems<T = ValueType> = [
 export class ValueNode<T extends ValueType = ValueType>
   implements BaseJsonNode<"value">
 {
-  public readonly type: "value" = "value";
+  public readonly type = "value" as const;
   public items: ValueNodeItems<T>;
   public source?: SourceLocation;
 
@@ -82,7 +82,7 @@ export class ValueNode<T extends ValueType = ValueType>
 
 /** An array node */
 export class ArrayNode implements BaseJsonNode<"array"> {
-  public readonly type: "array" = "array";
+  public readonly type = "array" as const;
   public parent?: JsonNode;
   public items: JsonNode[] = [];
   public source?: SourceLocation;
@@ -94,7 +94,7 @@ export class ArrayNode implements BaseJsonNode<"array"> {
 
 /** An object node */
 export class ObjectNode implements BaseJsonNode<"object"> {
-  public readonly type: "object" = "object";
+  public readonly type = "object" as const;
   public parent?: JsonNode;
   public source?: SourceLocation;
 
@@ -107,7 +107,7 @@ export class ObjectNode implements BaseJsonNode<"object"> {
 
 /** A property of an object */
 export class PropertyNode implements BaseJsonNode<"property"> {
-  public readonly type: "property" = "property";
+  public readonly type = "property" as const;
 
   public source?: SourceLocation;
   public keyNode: ValueNode<string>;
@@ -127,7 +127,7 @@ export class PropertyNode implements BaseJsonNode<"property"> {
 
 /** A noop that just acts as a marker */
 export class ProxyNode implements BaseJsonNode<"proxy"> {
-  public readonly type: "proxy" = "proxy";
+  public readonly type = "proxy" as const;
   public items: JsonNode[] = [];
   public parent?: JsonNode;
   public source?: SourceLocation;

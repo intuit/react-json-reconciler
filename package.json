@@ -2,51 +2,61 @@
   "name": "react-json-reconciler",
   "version": "2.0.0",
   "description": "A reconciler for creating JSON objects from a react-jsx tree",
-  "main": "dist/index.js",
   "author": "Adam Dierkens <Adam_Dierkens@intuit.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/intuit/react-json-reconciler.git"
   },
   "license": "MIT",
-  "scripts": {
-    "build": "tsc",
-    "test": "jest",
-    "release": "auto shipit -vv",
-    "labelCheck": "auto pr-check",
-    "lint": "eslint src --cache",
-    "prepare": "is-ci || husky install"
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/index.legacy-esm.js",
+  "types": "types/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/cjs/index.cjs"
+    }
   },
   "files": [
-    "src/",
-    "dist/",
-    "logo.png"
+    "dist",
+    "src"
   ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest",
+    "release": "auto shipit -vv",
+    "labelCheck": "auto pr-check",
+    "lint": "oxlint",
+    "prepare": "is-ci || husky install"
+  },
   "devDependencies": {
-    "@auto-it/all-contributors": "10.31.0",
-    "@design-systems/eslint-config": "^2.17.8",
-    "@types/jest": "^26.0.23",
-    "@types/react": "^17.0.11",
-    "all-contributors-cli": "6.20.0",
-    "auto": "10.31.0",
-    "husky": "^7.0.0",
-    "is-ci": "^3.0.0",
-    "jest": "^27.0.6",
-    "jest-junit": "^12.2.0",
+    "@auto-it/all-contributors": "^11.0.4",
+    "@swc/core": "^1.3.101",
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "all-contributors-cli": "^6.26.1",
+    "auto": "^11.0.4",
+    "husky": "^8.0.3",
+    "is-ci": "^3.0.1",
     "lint-staged": "^11.0.0",
+    "oxlint": "^0.0.21",
     "prettier": "^2.3.2",
-    "react": "^17.0.2",
-    "ts-jest": "^27.0.3",
-    "typescript": "^4.3.5"
+    "react": "^18.2.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
   },
   "peerDependencies": {
     "react": "*"
   },
   "dependencies": {
-    "@types/react-reconciler": "^0.26.1",
+    "@types/react-reconciler": "^0.28.8",
     "json-source-map": "^0.6.1",
     "react-flatten-children": "^1.1.2",
-    "react-reconciler": "^0.26.2",
+    "react-reconciler": "^0.29.0",
     "source-map-js": "^1.0.2"
   }
 }

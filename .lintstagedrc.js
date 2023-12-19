@@ -4,6 +4,6 @@ module.exports = {
     return [`prettier --write ${files}`];
   },
   "*.{js,ts,tsx,jsx}": (filenames) => {
-    return [`eslint ${filenames.join(" ")}`];
+    return [`oxlint ${filenames.join(" ")}`];
   },
 };

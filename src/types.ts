@@ -1,4 +1,4 @@
-import React from "react";
+import type { ReactNode, Attributes, RefAttributes } from "react";
 import { ProxyNode } from ".";
 import {
   ArrayNode,
@@ -10,9 +10,9 @@ import {
 
 export type WithChildrenAndRefAttributes<T> = {
   /** React children of this node */
-  children?: React.ReactNode;
-} & React.Attributes &
-  React.RefAttributes<T>;
+  children?: ReactNode;
+} & Attributes &
+  RefAttributes<T>;
 
 export interface JsonElements {
   /** primitive for a prop of an object */
@@ -26,6 +26,9 @@ export interface JsonElements {
 
   /** An object primitive */
   obj: WithChildrenAndRefAttributes<ObjectNode>;
+
+  /** An object primitive */
+  object: WithChildrenAndRefAttributes<ObjectNode>;
 
   /** A primitive JSON value */
   value: {

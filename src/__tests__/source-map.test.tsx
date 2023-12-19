@@ -1,4 +1,5 @@
-import React from "react";
+import { test, expect } from "vitest";
+import * as React from "react";
 import { SourceMapConsumer } from "source-map-js";
 import { render } from "..";
 

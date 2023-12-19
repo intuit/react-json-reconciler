@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import reconciler from "react-reconciler";
 import { SourceMapGenerator } from "source-map-js";
 import { Pointer, PropPointer, stringify } from "json-source-map";
@@ -94,11 +94,20 @@ export const render = async (
 }> => {
   const container = new ProxyNode();
   (container as any).root = true;
-  const reactContainer = renderer.createContainer(container, 0, false, null);
+  const reactContainer = renderer.createContainer(
+    container,
+    0,
+    null,
+    false,
+    null,
+    "player",
+    (recoverableError: Error) => {},
+    null
+  );
   renderer.updateContainer(root, reactContainer, null, () => {});
 
   renderer.flushPassiveEffects();
-  renderer.flushDiscreteUpdates();
+  renderer.flushSync();
 
   const jsonValue = toJSON(container) as JsonType;
   const stringValue = stringify(jsonValue, null, 2);
