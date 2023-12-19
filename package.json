@@ -5,7 +5,7 @@
   "author": "Adam Dierkens <Adam_Dierkens@intuit.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/intuit/react-json-reconciler.git"
+    "url": "git+https://github.com/intuit/react-json-reconciler.git"
   },
   "license": "MIT",
   "main": "dist/cjs/index.cjs",
