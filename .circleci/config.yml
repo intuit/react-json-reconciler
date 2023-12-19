@@ -71,9 +71,7 @@ jobs:
           at: ~/react-json-reconciler
       - run:
           name: Test
-          command: yarn test --ci --reporters=default --reporters=jest-junit
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
+          command: yarn test --reporter=junit --outputFile=./reports/junit/junit.xml
       - run:
           name: Send CodeCov Results
           command: bash <(curl -s https://codecov.io/bash) -t $CODECOV_KEY
