@@ -3,7 +3,7 @@ version: 2
 defaults: &defaults
   working_directory: ~/react-json-reconciler
   docker:
-    - image: circleci/node:latest-browsers
+    - image: cimg/node:18.19-browsers
 
 jobs:
   install:
@@ -18,7 +18,7 @@ jobs:
             - react-json-reconciler-{{ .Branch }}-{{ checksum "yarn.lock" }}
             - react-json-reconciler-{{ .Branch }}
             # Find the most recent cache used from any branch
-            - react-json-reconciler-master
+            - react-json-reconciler-main
             - react-json-reconciler-
       - run:
           name: Install Dependencies
