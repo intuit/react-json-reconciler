@@ -1,5 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 import { Fiber, HostConfig } from "react-reconciler";
+import {
+  DiscreteEventPriority,
+  ContinuousEventPriority,
+  DefaultEventPriority,
+} from "react-reconciler/constants";
 import { ProxyNode, ValueNodeItems } from ".";
 import {
   ArrayNode,
@@ -253,12 +258,25 @@ export const hostConfig: HostConfig<
   prepareForCommit: () => null,
   resetAfterCommit: () => {},
   preparePortalMount: () => {},
-  now: () => Date.now(),
+  // now: () => Date.now(),
   scheduleTimeout: setTimeout,
   cancelTimeout: clearTimeout,
   noTimeout: -1,
-  queueMicrotask: (callback) =>
-    Promise.resolve(null).then(callback).catch(handleErrorInNextTick),
+  // queueMicrotask: (callback) =>
+  //   Promise.resolve(null).then(callback).catch(handleErrorInNextTick),
   isPrimaryRenderer: true,
   supportsHydration: false,
+  getCurrentEventPriority() {
+    return DefaultEventPriority;
+  },
+  beforeActiveInstanceBlur() {},
+  afterActiveInstanceBlur() {},
+  prepareScopeUpdate() {},
+  getInstanceFromNode() {
+    return null;
+  },
+  getInstanceFromScope() {
+    return null;
+  },
+  detachDeletedInstance() {},
 };

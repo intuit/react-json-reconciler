@@ -1,8 +1,0 @@
-{
-  "extends": "@design-systems",
-  "rules": {
-    "no-param-reassign": "off",
-    "@typescript-eslint/no-empty-function": "off",
-    "max-classes-per-file": "off"
-  }
-}

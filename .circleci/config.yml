@@ -3,7 +3,7 @@ version: 2
 defaults: &defaults
   working_directory: ~/react-json-reconciler
   docker:
-    - image: circleci/node:latest-browsers
+    - image: cimg/node:18.19-browsers
 
 jobs:
   install:
@@ -18,7 +18,7 @@ jobs:
             - react-json-reconciler-{{ .Branch }}-{{ checksum "yarn.lock" }}
             - react-json-reconciler-{{ .Branch }}
             # Find the most recent cache used from any branch
-            - react-json-reconciler-master
+            - react-json-reconciler-main
             - react-json-reconciler-
       - run:
           name: Install Dependencies
@@ -71,9 +71,7 @@ jobs:
           at: ~/react-json-reconciler
       - run:
           name: Test
-          command: yarn test --ci --reporters=default --reporters=jest-junit
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
+          command: yarn test --reporter=junit --outputFile=./reports/junit/junit.xml
       - run:
           name: Send CodeCov Results
           command: bash <(curl -s https://codecov.io/bash) -t $CODECOV_KEY

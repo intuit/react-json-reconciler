@@ -1,4 +1,13 @@
-import React, { PropsWithChildren } from "react";
+import { test, expect, describe, it } from "vitest";
+import React, {
+  ReactNode,
+  PropsWithChildren,
+  useEffect,
+  useRef,
+  useLayoutEffect,
+  useState,
+  useMemo,
+} from "react";
 import { createPortal, ProxyNode, render } from "..";
 import {
   ArrayNode,
@@ -9,7 +18,7 @@ import {
 } from "../json";
 
 const TEST_CASES: Array<
-  [name: string, element: React.ReactNode, expectedValue: JsonType]
+  [name: string, element: ReactNode, expectedValue: JsonType]
 > = [
   [
     "simple object",
@@ -35,7 +44,7 @@ const TEST_CASES: Array<
 
 test.each(TEST_CASES)(
   "%s",
-  async (name: string, element: React.ReactNode, expectedJson: JsonType) => {
+  async (name: string, element: ReactNode, expectedJson: JsonType) => {
     expect((await render(element)).jsonValue).toStrictEqual(expectedJson);
   }
 );
@@ -43,9 +52,9 @@ test.each(TEST_CASES)(
 describe("refs", () => {
   it("attaches the refs to an object", async () => {
     const CustomNode = () => {
-      const objRef = React.useRef<ObjectNode>(null);
+      const objRef = useRef<ObjectNode>(null);
 
-      React.useEffect(() => {
+      useEffect(() => {
         expect(objRef.current?.type).toBe("object");
       }, []);
 
@@ -60,9 +69,9 @@ describe("refs", () => {
 
   it("attaches the refs to a property", async () => {
     const CustomNode = () => {
-      const propRef = React.useRef<PropertyNode>(null);
+      const propRef = useRef<PropertyNode>(null);
 
-      React.useEffect(() => {
+      useEffect(() => {
         expect(propRef.current?.type).toBe("property");
       }, []);
 
@@ -85,9 +94,9 @@ describe("refs", () => {
 
   it("attaches the refs to an array", async () => {
     const CustomNode = () => {
-      const arrRef = React.useRef<ArrayNode>(null);
+      const arrRef = useRef<ArrayNode>(null);
 
-      React.useEffect(() => {
+      useEffect(() => {
         expect(arrRef.current?.type).toBe("array");
       }, []);
 
@@ -102,9 +111,9 @@ describe("refs", () => {
 
   it("attaches the refs to a value", async () => {
     const CustomNode = () => {
-      const valRef = React.useRef<ValueNode>(null);
+      const valRef = useRef<ValueNode>(null);
 
-      React.useEffect(() => {
+      useEffect(() => {
         expect(valRef.current?.type).toBe("value");
       }, []);
 
@@ -119,9 +128,9 @@ describe("refs", () => {
 
   it("removes items from a container", async () => {
     const Custom = () => {
-      const [show, setShow] = React.useState(false);
+      const [show, setShow] = useState(false);
 
-      React.useEffect(() => {
+      useEffect(() => {
         setShow(true);
       }, [show]);
 
@@ -186,10 +195,10 @@ describe("proxy", () => {
 
 describe("complex mutations", () => {
   const TreeParentMoving = (props: PropsWithChildren<unknown>) => {
-    const container = React.useMemo(() => new ProxyNode(), []);
+    const container = useMemo(() => new ProxyNode(), []);
     const portal = createPortal(props.children, container);
-    const proxyRef = React.useRef<ProxyNode>(null);
-    React.useLayoutEffect(() => {
+    const proxyRef = useRef<ProxyNode>(null);
+    useLayoutEffect(() => {
       if (!proxyRef.current) {
         return;
       }
@@ -201,14 +210,14 @@ describe("complex mutations", () => {
       }
     }, [container, proxyRef]);
 
-    return <proxy ref={proxyRef}>{portal}</proxy>;
+    return <proxy ref={proxyRef}>{portal as unknown as ReactNode}</proxy>;
   };
 
   const DelayedUpdate = () => {
-    const [value, setValue] = React.useState(0);
-    const propRef = React.useRef<PropertyNode>(null);
+    const [value, setValue] = useState(0);
+    const propRef = useRef<PropertyNode>(null);
 
-    React.useLayoutEffect(() => {
+    useLayoutEffect(() => {
       setValue(propRef.current?.children.length ?? 0);
     }, [propRef.current?.children.length]);
 

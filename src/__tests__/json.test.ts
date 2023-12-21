@@ -1,3 +1,4 @@
+import { test, expect } from "vitest";
 import { fromJSON, toJSON } from "../json";
 
 test("converts back and forth", () => {
