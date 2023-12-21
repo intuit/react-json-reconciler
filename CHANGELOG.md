@@ -1,3 +1,25 @@
+# v3.0.0 (Thu Dec 21 2023)
+
+### Release Notes
+
+#### Major dependency & repo updates ([#10](https://github.com/intuit/react-json-reconciler/pull/10))
+
+- Update builds to use `oxlint` and `tsup` using the same configs from the redux projects
+- Migrates from `jest` to `vitest`
+- Updates reconciler to work w/ react@18
+
+---
+
+#### 💥 Breaking Change
+
+- Major dependency & repo updates [#10](https://github.com/intuit/react-json-reconciler/pull/10) ([@adierkens](https://github.com/adierkens))
+
+#### Authors: 1
+
+- Adam Dierkens ([@adierkens](https://github.com/adierkens))
+
+---
+
 # v2.0.0 (Wed Aug 10 2022)
 
 #### 💥 Breaking Change
