@@ -10,7 +10,7 @@ import {
 
 export type WithChildrenAndRefAttributes<T> = {
   /** React children of this node */
-  children?: ReactPortal | ReactNode | ReactNode[];
+  children?: ReactNode | ReactNode[];
 } & Attributes &
   RefAttributes<T>;
 
