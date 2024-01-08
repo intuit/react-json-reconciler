@@ -1,4 +1,4 @@
-import type { ReactNode, Attributes, RefAttributes } from "react";
+import type { ReactNode, Attributes, RefAttributes, ReactPortal } from "react";
 import { ProxyNode } from ".";
 import {
   ArrayNode,
@@ -10,7 +10,7 @@ import {
 
 export type WithChildrenAndRefAttributes<T> = {
   /** React children of this node */
-  children?: ReactNode;
+  children?: ReactPortal | ReactNode | ReactNode[];
 } & Attributes &
   RefAttributes<T>;
 
