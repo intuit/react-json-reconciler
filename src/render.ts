@@ -12,8 +12,13 @@ const renderer = reconciler(hostConfig);
 export const createPortal = (
   children: React.ReactNode,
   container: JsonNode
-) => {
-  return renderer.createPortal(children, container, undefined, undefined);
+): React.ReactPortal => {
+  return renderer.createPortal(
+    children,
+    container,
+    undefined,
+    undefined
+  ) as unknown as React.ReactPortal;
 };
 
 /** Create a source map */
