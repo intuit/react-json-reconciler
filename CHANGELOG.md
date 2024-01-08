@@ -1,3 +1,15 @@
+# v3.0.1 (Mon Jan 08 2024)
+
+#### 🐛 Bug Fix
+
+- Fix TS types [#11](https://github.com/intuit/react-json-reconciler/pull/11) ([@adierkens](https://github.com/adierkens))
+
+#### Authors: 1
+
+- Adam Dierkens ([@adierkens](https://github.com/adierkens))
+
+---
+
 # v3.0.0 (Thu Dec 21 2023)
 
 ### Release Notes
